@@ -52,3 +52,23 @@
   (if (null? (cdr lis))
     lis
     (append2 (reverse (cdr lis)) (list (car lis)))))
+
+(define (find proc lis)
+  (cond
+    [(null? lis) #f]
+    [(proc (car lis)) (car lis)]
+    [else (find proc (cdr lis))]))
+
+; ex 6.5-1
+; define length without using fold
+(define (length lis)
+  (if (pair? lis)
+    (+ 1 (length (cdr lis)))
+    0))
+
+; ex 6.5-2
+(define (filter proc lis)
+  (cond
+    [(null? lis) '()]
+    [(proc (car lis)) (cons (car lis) (filter proc (cdr lis)))]
+    [else (filter proc (cdr lis))]))
