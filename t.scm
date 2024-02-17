@@ -59,16 +59,32 @@
     [(proc (car lis)) (car lis)]
     [else (find proc (cdr lis))]))
 
-; ex 6.5-1
-; define length without using fold
-(define (length lis)
-  (if (pair? lis)
-    (+ 1 (length (cdr lis)))
-    0))
-
 ; ex 6.5-2
 (define (filter proc lis)
   (cond
     [(null? lis) '()]
     [(proc (car lis)) (cons (car lis) (filter proc (cdr lis)))]
     [else (filter proc (cdr lis))]))
+
+; 6.6
+; NOT tail recursion
+; (define (length lis)
+;   (if (null? lis)
+;     0
+;     (+ 1 (length (cdr lis)))))
+
+; Tail recursion
+(define (length lis)
+  (define (length-rec lis n)
+    (if (null? lis)
+      n
+      (length-rec (cdr lis) (+ n 1))))
+  (length-rec lis 0))
+
+; reverse by tail recursion
+(define (reverse lis)
+  (define (reverse-rec rest reversed)
+    (if (null? rest)
+      reversed
+      (reverse-rec (cdr rest) (cons (car rest) reversed))))
+  (reverse-rec lis ()))
