@@ -4,17 +4,14 @@
 ;     0
 ; )
 
-; (define (sum-of-numbers lis)
-;   (fold + 0 lis))
+(define (sum-of-numbers lis)
+  (fold + 0 lis))
 
-; (define (product-of-numbers lis)
-;   (fold * 1 lis))
+(define (product-of-numbers lis)
+  (fold * 1 lis))
 
 ; (define (pick-greater a b)
 ;     (if (> a b) a b))
-
-; (define (max-number lis)
-;   (fold pick-greater -inf.0 lis))
 
 ; (define (max-number lis)
 ;   (if (null? lis)
@@ -88,3 +85,106 @@
       reversed
       (reverse-rec (cdr rest) (cons (car rest) reversed))))
   (reverse-rec lis ()))
+
+
+; 7.1
+(define (max-number lis)
+  (if (null? lis)
+    (error "max-number needs at least one number")
+    (fold
+      (lambda (a b) (if (> a b) a b))
+      (car lis)
+      (cdr lis))))
+
+(define (print-elements lis)
+  (fold
+    (lambda (a b) (print a))
+    #f
+    lis))
+
+; 7.2
+(define (print-elements lis)
+  (for-each (lambda (a) (print a)) lis))
+
+; (for-each proc lis)
+(for-each (lambda (x) (print "> " x)) '(a b c))
+
+; (walker proc lis)
+; walker はフラットなリストに作用する手続き
+(define (tree-walk walker proc tree)
+  (walker
+    (lambda (elt)
+      (if (list? elt)
+        (tree-walk walker proc elt)
+        (proc elt)))
+    tree))
+
+(tree-walk for-each print
+  '((1 2 3) 4 5 (6 (7 8))))
+
+(define (reverse-for-each proc lis)
+  (for-each proc (reverse lis)))
+
+(tree-walk reverse-for-each print
+  '((1 2 3) 4 5 (6 (7 8))))
+
+; (map proc lis)
+(map (lambda (x) (* x 2)) '(1 2 3 4))
+
+(tree-walk map (lambda (x) (* x 2))
+  '((1 2 3) 4 5 (6 (7 8))))
+
+(define (reverse-map proc lis)
+  (map proc (reverse lis)))
+
+(tree-walk reverse-map (lambda (x) x)
+  '((1 2 3) 4 5 (6 (7 8))))
+
+(define (reversed walker)
+  (lambda (proc lis)
+    (walker proc (reverse lis))))
+
+(define reverse-for-each (reversed for-each))
+(define reverse-map (reversed map))
+
+; ex7.2-1 for-each-numbers
+(define (for-each-numbers proc lis)
+  (for-each proc (filter number? lis)))
+
+; ex7.2-2 map-numbers
+(define (map-numbers proc lis)
+  (map proc (filter number? lis)))
+
+; ex7.2-3 number-only
+(define (number-only walker)
+  (lambda (proc lis)
+    (walker proc (filter number? lis))))
+
+; identity function
+(define (idf x) x)
+; TODO
+; (map idf '(1 2 (3)))
+; > (1 2 (3))
+; (map-numbers idf '(1 2 (3)))
+; > (1 2) // want (1 2 (3))
+
+; define numbers-only-for-tree
+; (tree-walk (numbers-only-for-tree map|for-each) proc tree)
+(define (filter-number-for-tree tree)
+  (if (null? tree)
+    '()
+    (if (list? (car tree))
+      (cons (filter-number-for-tree (car tree)) (filter-number-for-tree (cdr tree)))
+      (if (number? (car tree))
+        (cons (car tree) (filter-number-for-tree (cdr tree)))
+        (filter-number-for-tree (cdr tree))))))
+
+(define (numbers-only-for-tree walker)
+  (lambda (proc lis)
+    (walker proc (filter-number-for-tree lis))))
+
+; for-each, map, fold... can take multiple lists as arguments
+(for-each
+  (lambda (x y) (print x " -> " y))
+  '(a b c) '(1 2 3))
+(map list '(1 2 3) '(4 5 6) '(7 8 9))
