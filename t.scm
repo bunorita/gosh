@@ -162,12 +162,10 @@
 
 ; identity function
 (define (idf x) x)
-; TODO
 ; (map idf '(1 2 (3)))
 ; > (1 2 (3))
 ; (map-numbers idf '(1 2 (3)))
 ; > (1 2) // want (1 2 (3))
-
 ; define numbers-only-for-tree
 ; (tree-walk (numbers-only-for-tree map|for-each) proc tree)
 (define (filter-number-for-tree tree)
@@ -188,3 +186,30 @@
   (lambda (x y) (print x " -> " y))
   '(a b c) '(1 2 3))
 (map list '(1 2 3) '(4 5 6) '(7 8 9))
+
+; 7.3 local variables
+((lambda (a b) (+ (* a a) (* b b))) 3 4)
+; can be written as below.
+(let
+  ((a 3) (b 4))
+  (+ (* a a) (* b b)))
+
+; let expressions can nest.
+(let ((a 3)
+      (b 4))
+  (let ((a b)
+        (b a))
+    (cons a b)))
+; > (4 . 3)
+
+(letrec ((a 1)
+         (b (lambda (x) (+ a x))))
+  (b 4))
+; > 5
+
+(letrec ((sum (lambda (lis)
+                 (cond [(null? lis) 0]
+                       [(number? (car lis)) (+ (car lis) (sum (cdr lis)))]
+                       [else (sum (cdr lis))]))))
+(sum '(1 3 #f 6 #t 9)))
+; > 19
