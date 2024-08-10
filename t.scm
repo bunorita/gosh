@@ -227,3 +227,13 @@
 ; ex 7.4-1 define list
 (define (list . x) x)
 (define list (lambda x x))
+
+; 7.5 pass variadic arguments
+(define (append/log . args)
+  (print "args=" args)
+  (apply append args))
+
+(define (make-logger func)
+  (lambda args
+    (print "args=" args)
+    (apply func args)))
