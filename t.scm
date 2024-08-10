@@ -213,3 +213,17 @@
                        [else (sum (cdr lis))]))))
 (sum '(1 3 #f 6 #t 9)))
 ; > 19
+
+; 7.4 take variadic arguments
+(define (func  a b . c)
+  (print "a=" a ", b=" b ", c=" c))
+(define func
+  (lambda (a b . c) (print "a=" a ", b=" b ", c=" c)))
+
+(define (func . a) (print "a=" a))
+(define func
+  (lambda a (print "a=" a)))
+
+; ex 7.4-1 define list
+(define (list . x) x)
+(define list (lambda x x))
