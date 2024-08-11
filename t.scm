@@ -237,3 +237,22 @@
   (lambda args
     (print "args=" args)
     (apply func args)))
+
+; 7.6 arguments pattern matching
+(define (append . args)
+  (cond [(null? args) ()]
+        [(null? (cdr args)) (car args)]
+        [else (append2 (car args) (apply append (cdr args)))]))
+
+(use util.match)
+(define (append . args)
+  (match args
+    [() ()]
+    [(a) a]
+    [(a . b) (append2 a (apply append b))]))
+
+; max-nuber by arguments pattern matching
+(define (max-number lis)
+  (match lis
+    [() (error "max-number needs at least one number")]
+    [(x . y) (fold (lambda (a b) (if (> a b) a b)) x y)]))
