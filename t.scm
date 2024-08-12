@@ -279,3 +279,21 @@
                       . other-args)
     (print name " is " age " year(s) old.")
     (print "Other info:" other-args)))
+
+; 7.9 multiple return values
+; 7.9.1 receive
+(min&max 3 1 2) ;> 1 3
+(receive (min-val max-val)
+  (min&max 3 1 2)
+  (list min-val max-val))
+; > (1 3)
+(receive (min-val . rest)
+  (min&max 3 1 2)
+  (list min-val rest))
+; > (1 .(3))
+(receive values
+  (min&max 3 1 2)
+  values)
+; > (1 3)
+(let-values (((min-val max-val) (min&max 3 1 2)))
+  (format #t "max: ~s\nmin: ~s\n" max-val min-val))
