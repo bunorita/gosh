@@ -256,3 +256,26 @@
   (match lis
     [() (error "max-number needs at least one number")]
     [(x . y) (fold (lambda (a b) (if (> a b) a b)) x y)]))
+
+; 7.7 optional arguments, keyword arguments
+(define (make-list num . args)
+  (define (maker n init)
+    (if (= n 0)
+      ()
+      (cons init (maker (- n 1) init))))
+  (maker num (if (null? args) #f (car args))))
+; make-list by let-optionals
+(define (make-list num . args)
+  (let-optionals* args ((init #f))
+    (define (maker n)
+      (if (= n 0)
+        ()
+        (cons init (maker (- n 1)))))
+    (maker num)))
+
+(define (person . args)
+  (let-keywords args ((name "Anonymous")
+                      (age "unknown")
+                      . other-args)
+    (print name " is " age " year(s) old.")
+    (print "Other info:" other-args)))
