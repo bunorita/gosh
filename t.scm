@@ -297,3 +297,22 @@
 ; > (1 3)
 (let-values (((min-val max-val) (min&max 3 1 2)))
   (format #t "max: ~s\nmin: ~s\n" max-val min-val))
+
+
+; 8.2
+; 8.2.1 eauality
+(equal? '(1 2) '(1 . (2))) ;> #t
+; 8.2.2 identity
+(eq? (cons 1 2) (cons 1 2)) ;> #f
+(eq? 'xyz 'xyz) ;> #t
+; 8.2.3
+(equal? 1 1.0)
+(= 1 1.0)
+(char=? #\a #\a)
+(string=? "abc" "abc")
+; ci: case insensitive
+(char-ci=? #\a #\A)
+(string-ci=? "abc" "ABC")
+; 8.2.4
+(use srfi-1)
+(lset= eqv? '(1 2 3) '(3 1 2)) ; set equality
