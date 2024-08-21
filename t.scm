@@ -316,3 +316,12 @@
 ; 8.2.4
 (use srfi-1)
 (lset= eqv? '(1 2 3) '(3 1 2)) ; set equality
+
+; 8.3 procedures that handle boolean values
+; 8.3.3 procedures that take predicates
+(define positive-integer? (every-pred integer? positive?))
+(define nonnegative (complement negative?))
+; implement on my own
+(define (complement pred)
+  (lambda (x) (not (pred x))))
+; TODO: any-pred, every-pred
