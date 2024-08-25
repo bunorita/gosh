@@ -325,3 +325,25 @@
 (define (complement pred)
   (lambda (x) (not (pred x))))
 ; TODO: any-pred, every-pred
+
+; 8.4 condition
+; cond
+(define lis '(2 4 6 7 8 10))
+(cond [(find odd? lis) => (lambda (val) val)]
+      [else 0])
+(cond [(find odd? lis) => (cut <>)]
+      [else 0])
+; case
+(define (score card)
+  (case card
+    ((A) 11)
+    ((J Q K) 10)
+    ((2 3 4 5 6 7 8 9) card)
+    (else 0)))
+; when, unless
+(when #t
+  (print "foo")
+  (print "bar"))
+(unless #f
+  (print "foo")
+  (print "bar"))
