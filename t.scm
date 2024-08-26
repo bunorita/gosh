@@ -347,3 +347,47 @@
 (unless #f
   (print "foo")
   (print "bar"))
+
+; 9 state
+; 9.1 set
+; compare by equal?
+(define (member elt lis)
+  (cond [(null? lis) #f]
+        [(equal? elt (car lis)) lis]
+        [else (member elt (cdr lis))]))
+; passing cmp-fn by optional arg
+(define (member elt lis . options)
+  (let-optionals* options ((cmp-fn equal?))
+    (cond [(null? lis) #f]
+        [(cmp-fn elt (car lis)) lis]
+        [else (member elt (cdr lis) cmp-fn)])))
+(define (member2 elt lis . options)
+  (let-optionals* options ((cmp-fn equal?))
+    (define (loop lis)
+      (cond [(null? lis) #f]
+        [(cmp-fn elt (car lis)) lis]
+        [else (loop (cdr lis))]))
+    (loop lis)))
+; delete one element
+(define (delete-1 elt lis)
+  (cond [(null? lis) '()]
+        [(equal? elt (car lis)) (cdr lis)]
+        [else (cons (car lis) (delete-1 elt (cdr lis)))]))
+(define (delete-1 elt lis)
+  (define (loop lis)
+    (cond [(null? lis) '()]
+          [(equal? elt (car lis)) (cdr lis)]
+          [else (cons (car lis) (loop (cdr lis)))]))
+  (loop lis))
+(define (delete-1 elt lis . options)
+  (let-optionals* options ((cmp-fn equal?))
+    (define (loop lis)
+      (cond [(null? lis) '()]
+            [(cmp-fn elt (car lis)) (cdr lis)]
+            [else (cons (car lis) (loop (cdr lis)))]))
+    (loop lis)))
+
+; TODO:
+; (use gauche.test)
+; (let ((data '(1 2 3 4 5)))
+;   (test* "non-copy delete-1" data (delete-1 6 data) eq?))
