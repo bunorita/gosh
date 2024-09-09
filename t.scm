@@ -391,3 +391,28 @@
 ; (use gauche.test)
 ; (let ((data '(1 2 3 4 5)))
 ;   (test* "non-copy delete-1" data (delete-1 6 data) eq?))
+
+; 9.2 association list
+(assoc 'foo '((bar . 3) (foo . 2) (baz . 1)))
+;> (foo . 2)
+(define (assoc key alist . options)
+  (let-optionals* options ((cmp-fn equal?))
+    (define (loop alis)
+      (cond [(null? alis) #f]
+            [(cmp-fn key (caar alis)) (car alis)]
+            [else (loop (cdr alis))]))
+    (loop alist)))
+
+; 9.3 abstraction
+(define (traverse fallback get-key return repeat)
+  (lambda (elt lis . options)
+    (let-optionals* options ((cmp-fn equal?))
+      (define (loop lis)
+        (cond [(null? lis) fallback]
+              [(cmp-fn elt (get-key lis)) (return lis)]
+              [else (repeat loop lis)]))
+      (loop lis))))
+; define by traverse
+(define assoc
+  (traverse #f caar car
+            (lambda (loop lis) (loop (cdr lis)))))
