@@ -416,3 +416,45 @@
 (define assoc
   (traverse #f caar car
             (lambda (loop lis) (loop (cdr lis)))))
+; 9.4 association list again
+(define *item-database*
+  '((potion (drink . #t) (throw . #t))
+    (elixir (drink . #t) (throw . #t))
+    (pancake (eat . #t) (throw . #t))
+    (cookie (eat . #t) (throw . #t))
+    (dagger (throw . #t))))
+
+(define (item-properties item)
+  (cond [(assoc item *item-database*) => cdr]
+        [else ()]))
+
+(define (item-property-get item prop)
+  (cond [(assoc prop (item-properties item)) => cdr]
+        [else #f]))
+
+; 9.5 named-let
+'((hp . 320)
+ (mp . 66)
+ (position . #f)
+ (inventory potion potion dagger cookie dagger)
+)
+
+(use util.match)
+(define (make-player . args)
+  (define (loop lis)
+    (match lis
+      [() '()]
+      [(attr value . rest) (cons (cons attr value) (loop rest))]))
+  (loop args))
+(make-player 'hp 320 'mp 66 'position #f 'inventory '(potion potion dagger cookie dagger))
+
+(define (make-player2 . args)
+  (let loop ([lis args])
+    (match lis
+      [() ()]
+      [(attr value . rest) (cons (cons attr value) (loop rest))]
+      [_ (error "Number of arguments must be even:" args)])))
+(make-player2 'hp 320 'mp 66 'position #f 'inventory '(potion potion dagger cookie dagger))
+
+(define *player*
+  (make-player2 'hp 320 'mp 66 'position #f 'inventory '(potion potion dagger cookie dagger)))
